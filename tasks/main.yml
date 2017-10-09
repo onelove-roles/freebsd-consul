@@ -1,0 +1,19 @@
+---
+- name: install packages
+  with_items: "{{ consul_packages }}"
+  pkgng:
+    name: "{{ item.name }}"
+  notify:
+    - restart consul
+
+- name: create conf.d directory
+  file:
+    path: /usr/local/etc/consul.d
+    state: directory
+
+- name: enable consul service
+  template:
+    src: consul.j2
+    dest: /etc/rc.conf.d/consul
+  notify:
+    - restart consul
